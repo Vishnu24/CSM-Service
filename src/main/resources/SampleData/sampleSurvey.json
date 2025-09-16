@@ -1,0 +1,36 @@
+{
+  "title": "Customer HappyNess Survey",
+  "surveyId": "CSM-HA-001",
+  "category": "Happyness",
+  "createdBy": "vishnu.garg@gmail.com",
+  "state": "DRAFTED",
+  "question": [
+    {
+      "text": "Hope satisfied you are with our banking services ?",
+      "questionId": "CSM-HA-001-Q1",
+      "type": "Rating",
+      "state": "DRAFTED",
+      "required": true,
+      "dimension": "satisfied",
+      "distribution": {
+        "Strongly Agree": 5,
+        "Agree": 4,
+        "Natural": 3,
+        "Not Agree": 2,
+        "Strongly DisAgree": 1
+      }
+    },
+    {
+      "text": "CSM tool helpful?",
+      "questionId": "CSM-HA-001-Q2",
+      "type": "YES_NO",
+      "state": "DRAFTED",
+      "required": true,
+      "dimension": "loyalty",
+      "distribution": {
+        "Yes": 5,
+        "No": 3
+      }
+    }
+  ]
+}

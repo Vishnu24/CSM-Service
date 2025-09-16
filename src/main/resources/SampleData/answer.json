@@ -1,0 +1,12 @@
+{
+
+  "surveyId": "CSM-HA-001",
+  "respondedBy": "vishnu.garg@gmail.com",
+  "type": "Rating",
+  "dimension": "satisfied",
+  "required": true,
+  "answer": 5,
+  "answerText" : "Strongly Agree",
+  "questionId": "CSM-HA-001-Q1",
+  "role": "consumer"
+}
