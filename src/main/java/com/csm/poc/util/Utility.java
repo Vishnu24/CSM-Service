@@ -1,5 +1,6 @@
 package com.csm.poc.util;
 
+import com.csm.poc.model.QAFilter;
 import com.csm.poc.model.QueryFilters;
 import com.csm.poc.model.State;
 
@@ -34,6 +35,20 @@ public class Utility {
 
         }
         return  null;
+    }
+
+    public static QAFilter buildQAFilter(String role, String dimesnion, String type, String respondedBy,String start,String end, String groupBy) {
+        QAFilter filter= new QAFilter();
+        filter.setRole(role);
+        filter.setType(type);
+        filter.setDimension(dimesnion);
+        filter.setRespondedBy(respondedBy);
+        filter.setEnd(parseDate(end));
+        filter.setStart(parseDate(start));
+
+        if(groupBy !=null)
+            filter.setGroupBy(groupBy);
+        return filter;
     }
 
 }

@@ -5,6 +5,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -12,5 +13,5 @@ public interface SurveyRepository extends MongoRepository<Survey,Long> {
 
     @Query("{surveyId:?0}")
     Optional<Survey> findBySurveyId(String surveyId);
-
+    List<Survey> findByIdIn(List<Long> docIds);
     }

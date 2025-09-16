@@ -1,5 +1,6 @@
 package com.csm.poc.util;
 
+import com.csm.poc.model.QAFilter;
 import com.csm.poc.model.QueryFilters;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Component;
@@ -45,4 +46,33 @@ public class QueryBuilder {
             criteriaList.add(Criteria.where(key).gte(start).lte(end));
         }
     }
+
+
+    public Criteria buildFilterCriteria(QAFilter qaFilter){
+        if (qaFilter ==null)
+            return new Criteria();
+
+        ArrayList<Criteria> criteriaList =new ArrayList<>();
+        addMatchingCriteriaFilter(Defines.Responded_By,qaFilter.getRespondedBy(),criteriaList);
+        addMatchingCriteriaFilter("type",qaFilter.getType(),criteriaList);
+        addMatchingCriteriaFilter("role",qaFilter.getRole(),criteriaList);
+        addMatchingCriteriaFilter("dimension",qaFilter.getDimension(),criteriaList);
+        addDateCriteriaFilter(Defines.Responded_At
+                ,qaFilter.getStart(),qaFilter.getEnd(),criteriaList);
+
+        if (criteriaList.isEmpty())
+            return new Criteria();
+        else
+            return new Criteria().andOperator(criteriaList.toArray(new Criteria[0]));
+    }
+
+    public Criteria buildDistributionCriteria(String questionID, String surveyId){
+
+
+        ArrayList<Criteria> criteriaList =new ArrayList<>();
+        addMatchingCriteriaFilter(Defines.SurveyId,surveyId,criteriaList);
+        addMatchingCriteriaFilter(Defines.QuestionId,questionID,criteriaList);
+        return new Criteria().andOperator(criteriaList.toArray(new Criteria[0]));
+    }
+
 }

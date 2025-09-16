@@ -1,19 +1,13 @@
 package com.csm.poc.controller;
 
-import com.csm.poc.model.QueryFilters;
-import com.csm.poc.model.ReportCount;
-import com.csm.poc.model.Survey;
+import com.csm.poc.model.*;
 import com.csm.poc.service.QueryService;
 import com.csm.poc.service.ReportService;
-import com.csm.poc.service.SurveyService;
 import com.csm.poc.util.Utility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -41,6 +35,7 @@ public class QueryController {
 
     }
 
+
     @GetMapping("report/surveys")
     public ResponseEntity<List<ReportCount>> getReportByFilterAndGroup(
             @RequestParam(required = false) String title,
@@ -53,5 +48,41 @@ public class QueryController {
     ){
         QueryFilters filter = Utility.buildQueryFilter(createdBy,title,category,state,start,end,groupBy);
         return new ResponseEntity<List<ReportCount>>(reportService.getReportCountByFilter(filter), HttpStatus.OK);
+    }
+
+
+    @GetMapping("query/consumer")
+    public ResponseEntity<List<Survey>> getAllSurveyByResponder(
+            @RequestParam(required = false) String role,
+            @RequestParam(required = false) String dimension,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) String start,
+            @RequestParam(required = false) String end,
+            @RequestParam(required = true) String respondedBy
+    ){
+        QAFilter filter = Utility.buildQAFilter(role,dimension,type,respondedBy,start,end,null);
+        return new ResponseEntity<List<Survey>>(queryService.getAllSurveyByQAFilter(filter), HttpStatus.OK);
+    }
+
+    @GetMapping("report/distribution/{surveyId}")
+    public ResponseEntity<List<ReportCount>> getDistributionReport(
+            @PathVariable("surveyId") String surveyID,
+            @RequestParam(required = true) String questionId
+    ){
+
+        return new ResponseEntity<List<ReportCount>>(reportService.getDistributionReport(questionId,surveyID), HttpStatus.OK);
+    }
+
+    @GetMapping("report/users")
+    public ResponseEntity<List<SurveyConsumer>> getParticipiationListBySurvey(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String createdBy,
+            @RequestParam(required = false) String state,
+            @RequestParam(required = false) String start,
+            @RequestParam(required = false) String end
+    ){
+        QueryFilters filter = Utility.buildQueryFilter(createdBy,title,category,state,start,end,null);
+        return new ResponseEntity<List<SurveyConsumer>>(reportService.getPartcipationList(filter), HttpStatus.OK);
     }
 }

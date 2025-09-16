@@ -1,0 +1,177 @@
+{
+	"info": {
+		"_postman_id": "d77d4399-15f7-4bdd-8abf-0cc4eaae8fbf",
+		"name": "CSM",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1790810"
+	},
+	"item": [
+		{
+			"name": "GetSurvey",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "SurveyByFilter",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/survey?state=Drafted",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"survey"
+					],
+					"query": [
+						{
+							"key": "state",
+							"value": "Drafted"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ConsumerSurbeLis",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/query/consumer?respondedBy=Drafted",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"query",
+						"consumer"
+					],
+					"query": [
+						{
+							"key": "respondedBy",
+							"value": "Drafted"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "reportUsers",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/report/usres",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"report",
+						"usres"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "distributionReport",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/report/distribution/CSM-HA-001",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"report",
+						"distribution",
+						"CSM-HA-001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SurveyReportGroupByAndFilter",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/report?state=Drafted&groupBy=state",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"report"
+					],
+					"query": [
+						{
+							"key": "state",
+							"value": "Drafted"
+						},
+						{
+							"key": "groupBy",
+							"value": "state"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateSUrvey",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/survey",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"survey"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AnswerSurvey",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/survey",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"survey"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
