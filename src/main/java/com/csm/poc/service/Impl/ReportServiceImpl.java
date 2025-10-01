@@ -4,6 +4,7 @@ import com.csm.poc.model.*;
 import com.csm.poc.service.ReportService;
 import com.csm.poc.util.Defines;
 import com.csm.poc.util.QueryBuilder;
+import com.csm.poc.util.Utility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -32,25 +33,19 @@ public class ReportServiceImpl implements ReportService {
         List<ReportCount> mappingResult = getReportResult(queryFilter);
         long sum = mappingResult.stream().mapToLong(ReportCount::getCount).sum();
 
-        return mappingResult.stream().map(
-                        report -> new ReportCount(report.getField(),
-                                report.getCount(), report.getTotal(), (report.getCount() * 100) / sum))
-                .sorted((a, b) -> Long.compare(a.getCount(), b.getCount()))
-                .collect(Collectors.toList());
+        return mappingResult.stream().map(report -> new ReportCount(report.getField(), report.getCount(), report.getTotal(), (report.getCount() * 100) / sum)).sorted((a, b) -> Long.compare(a.getCount(), b.getCount())).collect(Collectors.toList());
     }
 
     @Override
-    public List<SurveyConsumer> getPartcipationList(QueryFilters queryFilter) {
+    public List<SurveyConsumers> getPartcipationList(QueryFilters queryFilter) {
 
         Criteria criteria = queryBuilder.buildFilterCriteria(queryFilter);
-        List<String> surveyIds = mongoTemplate.findDistinct(new Query(criteria), Defines.SurveyId,
-                Survey.class, String.class);
-        ArrayList<SurveyConsumer> consumers = new ArrayList<>();
+        List<String> surveyIds = mongoTemplate.findDistinct(new Query(criteria), Defines.SurveyId, Survey.class, String.class);
+        ArrayList<SurveyConsumers> consumers = new ArrayList<>();
         for (String surveyId : surveyIds) {
             Criteria searchCtr = Criteria.where(Defines.SurveyId).is(surveyId);
-            List<String> users = mongoTemplate.findDistinct(new Query(searchCtr), Defines.Responded_By,
-                    QAResponse.class, String.class);
-            consumers.add(new SurveyConsumer(surveyId, users.size(), users));
+            List<String> users = mongoTemplate.findDistinct(new Query(searchCtr), Defines.Responded_By, QAResponse.class, String.class);
+            consumers.add(new SurveyConsumers(surveyId, users.size(), users));
         }
 
         return consumers;
@@ -61,23 +56,28 @@ public class ReportServiceImpl implements ReportService {
         List<ReportCount> mappingResult = getDistributionReportCriteria(questionId, surveyID);
         long sum = mappingResult.stream().mapToLong(ReportCount::getCount).sum();
 
-        return mappingResult.stream().map(
-                        report -> new ReportCount(report.getField(),
-                                report.getCount(), report.getTotal(), (report.getCount() * 100) / sum))
-                .sorted((a, b) -> Long.compare(a.getCount(), b.getCount()))
-                .collect(Collectors.toList());
+        return mappingResult.stream().map(report -> new ReportCount(report.getField(), report.getCount(), report.getTotal(), (report.getCount() * 100) / sum)).sorted((a, b) -> Long.compare(a.getCount(), b.getCount())).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SurveyReport> getSurveyReport(QueryFilters queryFilter) {
+
+        Criteria criteria = queryBuilder.buildFilterCriteria(queryFilter);
+        List<Survey> surveyList = mongoTemplate.find(new Query(criteria), Survey.class);
+        ArrayList<SurveyReport> surveyReport = new ArrayList<>();
+        for (Survey survey : surveyList) {
+            Criteria searchCtr = Criteria.where(Defines.SurveyId).is(survey.getSurveyId());
+            List<String> users = mongoTemplate.findDistinct(new Query(searchCtr), Defines.Responded_By, QAResponse.class, String.class);
+            surveyReport.add(new SurveyReport(survey.getSurveyId(), survey.getTitle(), survey.getCreatedBy(),
+                    users.size(), survey.getState().toString(), Utility.parseDateString(survey.getCreatedAt())));
+        } return surveyReport;
     }
 
     private List<ReportCount> getReportResult(QueryFilters queryFilter) {
 
         Criteria criteria = queryBuilder.buildFilterCriteria(queryFilter);
 
-        Aggregation aggregation = Aggregation.newAggregation(
-                Aggregation.match(criteria),
-                Aggregation.group(queryFilter.getGroupBy()).count().as("count"),
-                Aggregation.project("count").and("_id").as("field"),
-                Aggregation.sort(Sort.Direction.DESC, "count")
-        );
+        Aggregation aggregation = Aggregation.newAggregation(Aggregation.match(criteria), Aggregation.group(queryFilter.getGroupBy()).count().as("count"), Aggregation.project("count").and("_id").as("field"), Aggregation.sort(Sort.Direction.DESC, "count"));
         System.out.println(aggregation.toString());
         AggregationResults<ReportCount> reportResult = mongoTemplate.aggregate(aggregation, "surveys", ReportCount.class);
 
@@ -88,12 +88,7 @@ public class ReportServiceImpl implements ReportService {
 
         Criteria criteria = queryBuilder.buildDistributionCriteria(questionId, surveyId);
 
-        Aggregation aggregation = Aggregation.newAggregation(
-                Aggregation.match(criteria),
-                Aggregation.group("answerText").count().as("count"),
-                Aggregation.project("count").and("_id").as("field"),
-                Aggregation.sort(Sort.Direction.DESC, "count")
-        );
+        Aggregation aggregation = Aggregation.newAggregation(Aggregation.match(criteria), Aggregation.group("answerText").count().as("count"), Aggregation.project("count").and("_id").as("field"), Aggregation.sort(Sort.Direction.DESC, "count"));
         System.out.println(aggregation.toString());
         AggregationResults<ReportCount> reportResult = mongoTemplate.aggregate(aggregation, "qa_responses", ReportCount.class);
 

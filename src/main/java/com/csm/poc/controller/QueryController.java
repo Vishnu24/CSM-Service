@@ -36,7 +36,7 @@ public class QueryController {
     }
 
 
-    @GetMapping("report/surveys")
+    @GetMapping("report/survey-filter")
     public ResponseEntity<List<ReportCount>> getReportByFilterAndGroup(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String category,
@@ -74,7 +74,7 @@ public class QueryController {
     }
 
     @GetMapping("report/users")
-    public ResponseEntity<List<SurveyConsumer>> getParticipiationListBySurvey(
+    public ResponseEntity<List<SurveyConsumers>> getParticipiationListBySurvey(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String category,
             @RequestParam(required = false) String createdBy,
@@ -83,6 +83,20 @@ public class QueryController {
             @RequestParam(required = false) String end
     ){
         QueryFilters filter = Utility.buildQueryFilter(createdBy,title,category,state,start,end,null);
-        return new ResponseEntity<List<SurveyConsumer>>(reportService.getPartcipationList(filter), HttpStatus.OK);
+        return new ResponseEntity<List<SurveyConsumers>>(reportService.getPartcipationList(filter), HttpStatus.OK);
     }
+
+    @GetMapping("report/surveys")
+    public ResponseEntity<List<SurveyReport>> getSurveyDashboard(@RequestParam(required = false) String title,
+                                                                    @RequestParam(required = false) String category,
+                                                                    @RequestParam(required = false) String createdBy,
+                                                                    @RequestParam(required = false) String state,
+                                                                    @RequestParam(required = false) String start,
+                                                                    @RequestParam(required = false) String end
+
+    ){
+        QueryFilters filter = Utility.buildQueryFilter(createdBy,title,category,state,start,end,null);
+        return new ResponseEntity<List<SurveyReport>>(reportService.getSurveyReport(filter), HttpStatus.OK);
+    }
+
 }

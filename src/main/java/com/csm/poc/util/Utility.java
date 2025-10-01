@@ -37,6 +37,22 @@ public class Utility {
         return  null;
     }
 
+    public static String parseDateString(Date date){
+        if(date == null)
+            return "";
+        SimpleDateFormat formatter = new SimpleDateFormat(Defines.DATE_FORMAT);
+        try {
+
+            String dateStr = formatter.format(date);
+            System.out.println("Parsed Date: " + dateStr);
+            return dateStr;
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+        return  "";
+    }
+
     public static QAFilter buildQAFilter(String role, String dimesnion, String type, String respondedBy,String start,String end, String groupBy) {
         QAFilter filter= new QAFilter();
         filter.setRole(role);
